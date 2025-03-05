@@ -5,3 +5,9 @@ export type Books = {
   stock: number;
   authorId: string;
 };
+
+export type BookWithoutAuthorId = Omit<Books, "authorId">;
+
+export type Username = { username: string };
+
+export type BookId = string;
