@@ -18,6 +18,7 @@ model Users {
   name     String
   lastname String
   email    String   @unique
+  usename  String   @unique
   books    String[] @default([])
 
   @@map("users")
@@ -27,6 +28,7 @@ model Authors {
   id       String  @id @default(uuid())
   name     String
   lastname String
+  username String  @unique
   books    Books[]
 
   @@map("authors")
@@ -37,7 +39,7 @@ model Books {
   name     String
   released Int
   pages    Int
-  stock    Int
+  stock    Int     @default(1)
   authorId String
   author   Authors @relation(fields: [authorId], references: [id])
 
