@@ -50,6 +50,8 @@ export class BooksModel {
 
       if (author === null) return "Author not found";
 
+      if (author.role !== "AUTHOR") return "User is not an author.";
+
       const authorId = author.id;
 
       const newBook = await db.books.create({
