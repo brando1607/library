@@ -126,12 +126,19 @@ export class BooksModel {
         return "User already has book.";
       }
 
+      if (findBook.stock === 0) {
+        return "No stock available for this book. Try again later.";
+      }
+
       await db.books.update({
         where: { id: findBook.id },
         data: { stock: findBook.stock - 1 },
       });
 
-      findUser.currentbooks.push(findBook.name);
+      await db.users.update({
+        where: { id: findUser.id },
+        data: { currentbooks: [...findUser.currentbooks, findBook.name] },
+      });
 
       return findUser;
     } catch (error) {
@@ -154,20 +161,25 @@ export class BooksModel {
 
     if (!findBook) return "Book not found.";
 
-    if (!findUser.currentbooks.includes(findBook.name)) {
-      return "User doesn't have book.";
-    }
-
-    await db.books.update({
-      where: { id: findBook.id },
-      data: { stock: findBook.stock + 1 },
-    });
-
     const borrowedBook = findUser.currentbooks.findIndex(
       (e) => e === findBook.name
     );
 
     findUser.currentbooks.splice(borrowedBook, 1);
+
+    if (0 > borrowedBook) {
+      return "User doesn't have book.";
+    }
+
+    await db.users.update({
+      where: { id: findUser.id },
+      data: { currentbooks: [...findUser.currentbooks] },
+    });
+
+    await db.books.update({
+      where: { id: findBook.id },
+      data: { stock: findBook.stock + 1 },
+    });
 
     return findUser;
   };
