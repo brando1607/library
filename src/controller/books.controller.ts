@@ -68,4 +68,34 @@ export class BooksController {
       console.error(error);
     }
   };
+  static takeBook = async (req: Request, res: Response) => {
+    try {
+      const { username } = req.params;
+      const bookName: string = req.body.bookName;
+
+      const result = await BooksModel.takeBook({
+        bookName,
+        borrower: { username },
+      });
+
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  static returnBook = async (req: Request, res: Response) => {
+    try {
+      const { username } = req.params;
+      const bookName: string = req.body.bookName;
+
+      const result = await BooksModel.returnBook({
+        bookName,
+        borrower: { username },
+      });
+
+      res.send(result);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 }

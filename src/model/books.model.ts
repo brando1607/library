@@ -105,4 +105,70 @@ export class BooksModel {
       console.error(error);
     }
   };
+  static takeBook = async ({
+    bookName,
+    borrower,
+  }: {
+    bookName: string;
+    borrower: Username;
+  }) => {
+    try {
+      const findBook = await db.books.findFirst({ where: { name: bookName } });
+      const findUser = await db.users.findFirst({
+        where: { username: borrower.username },
+      });
+
+      if (!findUser) return "User not found.";
+
+      if (!findBook) return "Book not found.";
+
+      if (findUser.currentbooks.includes(findBook.name)) {
+        return "User already has book.";
+      }
+
+      await db.books.update({
+        where: { id: findBook.id },
+        data: { stock: findBook.stock - 1 },
+      });
+
+      findUser.currentbooks.push(findBook.name);
+
+      return findUser;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  static returnBook = async ({
+    bookName,
+    borrower,
+  }: {
+    bookName: string;
+    borrower: Username;
+  }) => {
+    const findBook = await db.books.findFirst({ where: { name: bookName } });
+    const findUser = await db.users.findFirst({
+      where: { username: borrower.username },
+    });
+
+    if (!findUser) return "User not found.";
+
+    if (!findBook) return "Book not found.";
+
+    if (!findUser.currentbooks.includes(findBook.name)) {
+      return "User doesn't have book.";
+    }
+
+    await db.books.update({
+      where: { id: findBook.id },
+      data: { stock: findBook.stock + 1 },
+    });
+
+    const borrowedBook = findUser.currentbooks.findIndex(
+      (e) => e === findBook.name
+    );
+
+    findUser.currentbooks.splice(borrowedBook, 1);
+
+    return findUser;
+  };
 }
