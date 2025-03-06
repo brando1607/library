@@ -46,7 +46,14 @@ export class BooksModel {
 
       const bookExists = await db.books.findFirst({ where: { name: name } });
 
-      if (bookExists) return "Book already exists.";
+      if (bookExists) {
+        const newBook = await db.books.update({
+          where: { id: bookExists.id },
+          data: { stock: stock + bookExists.stock },
+        });
+
+        return newBook;
+      }
 
       if (author === null) return "Author not found";
 
