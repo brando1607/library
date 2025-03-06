@@ -10,4 +10,4 @@ export type BookWithoutAuthorId = Omit<Books, "authorId">;
 
 export type Username = { username: string };
 
-export type BookId = string;
+export type DatabaseId = string;
