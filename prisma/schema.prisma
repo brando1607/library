@@ -13,35 +13,32 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+  USER
+  AUTHOR
+}
+
 model Users {
-  id       String   @id @default(uuid())
-  name     String
-  lastname String
-  email    String   @unique
-  usename  String   @unique
-  books    String[] @default([])
+  id           String   @id @default(uuid())
+  name         String
+  lastname     String
+  email        String   @unique
+  username     String   @unique
+  role         Role     @default(USER)
+  currentbooks String[] @default([])
+  books        Books[]
 
   @@map("users")
 }
 
-model Authors {
-  id       String  @id @default(uuid())
-  name     String
-  lastname String
-  username String  @unique
-  books    Books[]
-
-  @@map("authors")
-}
-
 model Books {
-  id       String  @id @default(uuid())
-  name     String
+  id       String @id @default(uuid())
+  name     String @unique
   released Int
   pages    Int
-  stock    Int     @default(1)
+  stock    Int    @default(1)
   authorId String
-  author   Authors @relation(fields: [authorId], references: [id])
+  author   Users  @relation(fields: [authorId], references: [id])
 
   @@map("books")
 }
