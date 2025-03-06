@@ -4,7 +4,7 @@ import {
   Username,
   BookWithoutAuthorId,
   Books,
-  BookId,
+  DatabaseId,
 } from "../types/books.types";
 
 export class BooksController {
@@ -32,7 +32,7 @@ export class BooksController {
   static createBook = async (req: Request, res: Response) => {
     try {
       const { name, released, pages, stock }: BookWithoutAuthorId = req.body;
-      const { username }: Username = req.body;
+      const { username } = req.params;
 
       const result = await BooksModel.addBook({
         book: { name, released, pages, stock },
@@ -47,7 +47,7 @@ export class BooksController {
   static updateBook = async (req: Request, res: Response) => {
     try {
       const newInformation: Partial<Books> = req.body;
-      const id: BookId = req.params.id;
+      const id: DatabaseId = req.params.id;
 
       const result = await BooksModel.updateBook({ newInformation, id });
 
@@ -59,7 +59,7 @@ export class BooksController {
 
   static deleteBook = async (req: Request, res: Response) => {
     try {
-      const id: BookId = req.params.id;
+      const id: DatabaseId = req.params.id;
 
       const result = await BooksModel.deleteBook({ id });
 

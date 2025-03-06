@@ -3,7 +3,7 @@ import {
   BookWithoutAuthorId,
   Username,
   Books,
-  BookId,
+  DatabaseId,
 } from "../types/books.types";
 
 export class BooksModel {
@@ -40,9 +40,13 @@ export class BooksModel {
     try {
       const { name, released, pages, stock } = book;
 
-      const author = await db.authors.findFirst({
+      const author = await db.users.findFirst({
         where: { username: authorUsername.username },
       });
+
+      const bookExists = await db.books.findFirst({ where: { name: name } });
+
+      if (bookExists) return "Book already exists.";
 
       if (author === null) return "Author not found";
 
@@ -62,24 +66,24 @@ export class BooksModel {
     id,
   }: {
     newInformation: Partial<Books>;
-    id: BookId;
+    id: DatabaseId;
   }) => {
     try {
       const findBook = await db.books.findFirst({ where: { id: id } });
 
       if (!findBook) return "Book not found";
 
-      const newBook = await db.books.update({
+      const updatedBood = await db.books.update({
         where: { id: id },
         data: newInformation,
       });
 
-      return newBook;
+      return updatedBood;
     } catch (error) {
       console.error(error);
     }
   };
-  static deleteBook = async ({ id }: { id: BookId }) => {
+  static deleteBook = async ({ id }: { id: DatabaseId }) => {
     try {
       const findBook = await db.books.findFirst({ where: { id: id } });
 
