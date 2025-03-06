@@ -7,7 +7,7 @@ router.get("/getBooks", BooksController.getBooks);
 
 router.get("/getBook/:id", BooksController.getBook);
 
-router.post("/createBook", BooksController.createBook);
+router.post("/createBook/:username", BooksController.createBook);
 
 router.put("/updateBook/:id", BooksController.updateBook);
 
