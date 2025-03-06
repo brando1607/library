@@ -4,7 +4,7 @@ export const db = new PrismaClient();
 
 export const dbConnection = async () => {
   try {
-    await db.authors.findMany();
+    await db.users.findMany();
     console.log("DB connected.");
   } catch (error) {
     console.log("Error when connecting to db.");
